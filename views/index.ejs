@@ -1,0 +1,75 @@
+<html>
+<head>
+<title></title>
+    <link rel='stylesheet' href='css/style.css' />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type ="text/javascript">
+        $(document).ready(function (){
+          // this triggers the connection event in our server!
+            var socket = io.connect('http://localhost:8000');
+            // we'll write all the socket stuff after the above line!
+            var name = prompt("Please enter your name");
+            //console.log(sess_id);
+            socket.emit('got_new_user', {name: name});
+
+            socket.on('new_user', function (data) {
+                var new_user = $('<span id="user">New user joined: '  + JSON.stringify(data.new_name) + '</span>')
+                $('#display').html(new_user).hide().fadeIn(400).fadeOut(600);
+            });
+
+            $('#message_form').submit(function (){
+              socket_id = socket.id;
+              message = $('#message').val();
+              //console.log('socket_id: ' + socket_id, 'message: ' + message);
+              socket.emit('new_message',{'sid': socket_id,
+                                        'message': message
+                });
+              //$('#message').val()="";
+                return false;
+            });
+            socket.on("existing_users", function(data) {
+                for(var i = 0; i < data.other_users.length - 1; i++) {
+                  if(data.other_users[i] != null) {
+                  var other_message = $('<p id ="user">' + data.other_users[i].name + ': ' + data.other_users[i].message + '</p>');
+                  $('#conversation_board').append(other_user).hide().fadeIn(400);
+                }
+                }
+            });
+
+  }); //end of document ready
+
+    </script>
+<style>
+
+#user {
+  width: 200px;
+  height: 200px;
+  font-size: 0.8em;
+  color: green;
+  margin-left: 40%;
+}
+#conversation_board{
+  margin-top: 5%;
+  width: 80%;
+  height: 400px;
+  overflow-y: scroll;
+}
+#message_form{
+  margin-top: 40%;
+}
+</style>
+</head>
+<body>
+
+<center id="wrapper">
+  <div id="display"></div>
+  <div id="conversation_board"><u>Conversation Board</u></div>
+    <form id="message_form" action="">
+      <input id="message" type="text" name="message" placeholder="enter your message here"></input>
+      <button type="submit" value="Send">Send</button>
+    </form>
+
+</center>
+</body>
+</html>
