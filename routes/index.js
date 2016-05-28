@@ -67,14 +67,15 @@ io.sockets.on('connection', function(socket) {
     console.log(existing_users);
     console.log(socket.id, "got disconnected");
 
-
+//http://stackoverflow.com/questions/3396088/how-do-i-remove-an-object-from-an-array-with-javascript
     var removeByAttr = function(arr, attr, value){
       var i = arr.length;
       while(i--){
-        console.log('i=', i, ' val= ', arr[i][attr]);
+        //console.log('i=', i, ' val= ', arr[i][attr]);
          if( arr[i]
-             && (arr[i][attr] === value ) ){
-               console.log("i is: ", i);
+           && arr[i].hasOwnProperty(attr)
+           && (arguments.length > 2 && arr[i][attr] === value ) ){
+               //console.log("i is: ", i);
              arr.splice(i,1);
          }
       }
