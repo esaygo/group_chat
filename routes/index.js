@@ -34,8 +34,8 @@ io.sockets.on('connection', function(socket) {
                               });
         //existing_users.id = session_id;
         existing_users.push({
-          name: socket.username,
-          id: socket_id
+          id: socket_id,
+          name: socket.username
         });
       });//end of "got_new_user"
 
@@ -64,7 +64,28 @@ io.sockets.on('connection', function(socket) {
       });
 
   socket.on('disconnect', function(){
+    console.log(existing_users);
+    console.log(socket.id, "got disconnected");
+
+
+    var removeByAttr = function(arr, attr, value){
+      var i = arr.length;
+      while(i--){
+        console.log('i=', i, ' val= ', arr[i][attr]);
+         if( arr[i]
+             && (arr[i][attr] === value ) ){
+               console.log("i is: ", i);
+             arr.splice(i,1);
+         }
+      }
+
+    return arr;
+  }
+    socket_id = socket.id.replace(/[/#]/g,"");
+    removeByAttr(existing_users, 'id', socket_id);
+
     socket.leave('group_chat');
+    console.log("after disc, users are: ", existing_users);
     io.to('group_chat').emit('user_disconected', {user: socket.username})
 
   });

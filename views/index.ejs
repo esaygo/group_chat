@@ -50,6 +50,12 @@
               return false;
             });
 
+            socket.on('user_disconected', function(data) {
+              var user = $('<span id="user">User: '  + JSON.stringify(data.user) + ' disconnected</span>')
+              $('#display').html(user).hide().fadeIn(400).fadeOut(600);
+
+            });
+
   }); //end of document ready
 
     </script>
